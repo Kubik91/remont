@@ -422,9 +422,6 @@
     <Content Include="media\sectionimage\photo15686121_456241455_msyFgmj.jpg" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
-    <Content Include="app\templates\app\about.html" />
-    <Content Include="app\templates\app\contact.html" />
-    <Content Include="app\templates\app\index.html" />
     <Content Include="app\templates\app\layout.html" />
     <Content Include="app\templates\app\login.html" />
     <Content Include="app\templates\app\loginpartial.html" />
