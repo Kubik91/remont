@@ -1,0 +1,73 @@
+﻿{% load static sekizai_tags bootstrap4 %}
+{% block form %}
+    <form id="form" method="POST" action="{% url "feedback" %}" class="post-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+    </form>
+{% endblock %}
+{% addtoblock "js_ready" %}
+<script src="{% static 'js/jquery.inputmask.bundle.js' %}"></script>
+<script>
+$('#id_phone').each(function(){
+    $(this).inputmask({"removeMaskOnSubmit":false,"mask":"+375 (k{2}) n{1}n{1}n{1}-n{1}n{1}-n{1}n{1}", definitions: {
+        "k":{validator:"[(25)|(29)|(33)|(44)]"},"n":{validator:"[0-9\\(\\)\\.\\+\/ ]"}}
+    });
+});
+
+$('#id_name').each(function(){
+    $(this).inputmask({ 
+        regex: "^[A-zА-яЁё]+$"
+    });
+});
+$('form').submit(function(e) {
+    e.preventDefault(); //отмена действия по умолчанию для кнопки submit
+    var form = $(this);
+    var err = false;
+    var dataForm = new FormData(form.get(0));
+    form.find('input, textarea').each( function(){ // прoбeжим пo кaждoму пoлю в фoрмe
+		if ($(this).val() == ''){ // eсли нaхoдим пустoe
+            if($(this).attr('name')=='image'){
+                return true;
+            }
+            err = true;
+            $(this).addClass('error');
+			error = true; // oшибкa
+		}else{
+            $(this).removeClass('error');
+		}
+	});
+    if(err){
+        if($('.msg').length){
+            $('.msg').remove();
+        }
+        form.children().last().before('<p class="msg err">Заполните поля выделенные красным цветом.</p>');
+    }else{
+        $.ajax({
+            dataType: 'json',
+            type: form.attr('method'),
+            url: form.attr('action'),
+            contentType: false, // важно - убираем форматирование данных по умолчанию
+            processData: false, // важно - убираем преобразование строк по умолчанию
+            data: dataForm,
+            dataType: 'json',
+            complete: function(data){
+                if(data.length){
+                    if($('.msg').length){
+                        $('.msg').remove();
+                    }
+                    form.children().last().before('<p class="msg err">Заполните поля выделенные красным цветом.</p>');
+                    data.forEach(function(item){
+                        form.find('#preuser-'+item).addClass('error')
+                    })
+                }else{
+                    if($('.msg').length){
+                        $('.msg').remove();
+                    }
+                    form.children().last().before('<p class="msg">Ваша заявка принята, наши сотрудники свяжутся с вами в ближайшее время.</p>');
+                }
+            }
+        })
+    };
+});
+</script>
+{% endaddtoblock %}

@@ -1,0 +1,37 @@
+﻿{% load static sections sekizai_tags %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
+{% endaddtoblock %}
+{% block section %}
+    <section class="section section-map">
+        {% if section.title %}
+            <h2 class="title {% if section.title_animate %}before {{ section.title_animate }}{% endif %}">{{ section.title }}</h2>
+        {% endif %}
+        <div class="route forward">Выберите конечный пункт!</div>
+        <div class="route reverse">Выберите начальный пункт!</div>
+        <div class="map" id="{{'map'|uniq|stat_uniq}}"></div>
+        {% addtoblock "js_ready" %}
+<script src="{% static 'js/map.js' %}"></script>
+<script>
+if (typeof maps === 'undefined' || maps === null) {
+    maps={};
+}
+maps.{{''|stat_uniq}}  = 
+{
+    {% for m in map %}
+{{forloop.counter}}:{
+    coords:[{{m.latitude}}, {{m.longitude}}],
+    hint:{{m.hint}},
+    baloon:'{{m.baloon|safe}}',
+    address:'{{m.address|safe}}',
+    object:'{{m.object}}'
+    },
+{% endfor %}}
+</script>
+        {% endaddtoblock %}
+        {% addtoblock "js_head" %}
+<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+<script src="{% static 'js/map-round.js' %}"></script>
+        {% endaddtoblock %}
+    </section>
+{% endblock %}
