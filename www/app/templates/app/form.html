@@ -1,4 +1,4 @@
-﻿{% load static sekizai_tags bootstrap4 %}
+{% load static sekizai_tags bootstrap4 %}
 {% block form %}
     <form id="form" method="POST" action="{% url "feedback" %}" class="post-form" enctype="multipart/form-data">
         {% csrf_token %}

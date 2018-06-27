@@ -2,24 +2,37 @@
 Definition of views.
 """
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, Http404
 from django.template import RequestContext
 from datetime import datetime
 from django.http import HttpResponse, HttpResponseNotFound
 from django.views.decorators.http import require_http_methods
 
-#from django.views.decorators.cache import never_cache, cache_page
 from .models import *
 from .forms import *
 
 
 def pages(request, slug):
-    try:
-        page = Page.objects.get(slug=slug)
-    except:
-        raise Http404("Страница не найдена")
-    assert isinstance(request, HttpRequest)
+    page = get_object_or_404(Page, slug=slug)
+    if page.view:
+        page.view = 'app/temp/' + page.view
+        if page.layout:
+            return render(
+                request,
+                'app/view.html',
+                {
+                    'page':page,
+                }
+            )
+        else:
+            return render(
+                request,
+                page.view,
+                {
+                    'page':page,
+                }
+            )
     return render(
         request,
         'app/page.html',
@@ -29,12 +42,25 @@ def pages(request, slug):
     )
 
 def home(request):
-    """Renders the home page."""
-    try:
-        page = HomePage.objects.get(pk=1).page
-    except:
-        raise Http404("Страница не найдена")
-    assert isinstance(request, HttpRequest)
+    page = get_object_or_404(Page.objects.filter(homePage__isnull=False))
+    if page.view:
+        page.view = 'app/temp/' + page.view
+        if page.layout:
+            return render(
+                request,
+                'app/view.html',
+                {
+                    'page':page,
+                }
+            )
+        else:
+            return render(
+                request,
+                page.view,
+                {
+                    'page':page,
+                }
+            )
     return render(
         request,
         'app/page.html',
@@ -45,7 +71,6 @@ def home(request):
 
 @require_http_methods(['POST'])
 def feedback(request):
-    """Renders the contact page."""
     assert isinstance(request, HttpRequest)
     form = FeedbackForm(request.POST, request.FILES)
     if form.is_valid():

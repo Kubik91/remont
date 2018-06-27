@@ -1,29 +1,26 @@
 # vim: set fileencoding=utf-8 :
 from django.contrib import admin
-from django import forms
 from django.forms.utils import ErrorList
+from jet.admin import CompactInline
+from jet.filters import DateRangeFilter
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 from . import models
 
-class HomePageModelForm(forms.ModelForm):
-    def clean(self):
-        if models.HomePage.objects.count() > 1:
-            self._errors.setdefault('__all__', ErrorList()).append("Вы можете создать только одну домашнюю страницу.")
-        return self.cleaned_data
 
-#class TableModelForm(forms.ModelForm):
-#    class Meta:
-#        model = models.Table
-
-#    def clean(self):
-#        categories = self.cleaned_data.get('categories')
-#        if categories and categories.count() > 3:
-#            raise ValidationError('Maximum three categories are allowed.')
-
-#        return self.cleaned_data
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'name',
+        'phone',
+        'text',
+        'image',
+        'created_at',
+        'updated_at'
+    )
+    list_filter = (('created_at', DateRangeFilter), ('updated_at', DateRangeFilter), 'name')
 
 class BlockAdmin(admin.ModelAdmin):
-
     list_display = (
         'id',
         'section',
@@ -34,6 +31,13 @@ class BlockAdmin(admin.ModelAdmin):
         'animate',
     )
     list_filter = ('section',)
+    class Media:
+        css = {
+            'all': (static('css/animate.min.css'),)
+        }
+        js = (
+            static('admin/js/animate.js'),
+            )
 
 
 class CaruselItemAdmin(admin.ModelAdmin):
@@ -44,7 +48,6 @@ class CaruselItemAdmin(admin.ModelAdmin):
         'text',
         'button_text',
         'button_url',
-        'text_color',
         'animate',
     )
     raw_id_fields = ('section',)
@@ -64,7 +67,7 @@ class FilterItemAdmin(admin.ModelAdmin):
         'text',
         'button_text',
         'button_url',
-        'position',
+        'pos',
         'width',
         'height',
     )
@@ -72,9 +75,16 @@ class FilterItemAdmin(admin.ModelAdmin):
 
 
 class HomePageAdmin(admin.ModelAdmin):
-    form = HomePageModelForm
     list_display = ('id', 'page')
     list_filter = ('page',)
+    def has_add_permission(self, request):
+        base_add_permission = super(HomePageAdmin, self).has_add_permission(request)
+        if base_add_permission:
+            # if there's already an entry, do not allow adding
+            count = models.HomePage.objects.all().count()
+            if count == 0:
+                return True
+        return False
 
 
 class MapItemAdmin(admin.ModelAdmin):
@@ -90,18 +100,53 @@ class SectionImageAdmin(admin.ModelAdmin):
     list_display = ('id', 'section', 'image', 'position', 'animate')
     list_filter = ('section',)
 
-class SectionImageInline(admin.TabularInline):
+class MaplItemInline(CompactInline):
+    model = models.MapItem.section.through
+    verbose_name = "Карта"
+    verbose_name_plural = "Карты"
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
+class CaruselItemInline(CompactInline):
+    model = models.CaruselItem
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
+class FilterItemInline(CompactInline):
+    model = models.FilterItem
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
+class BlockInline(CompactInline):
+    model = models.Block
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
+class TableInline(CompactInline):
+    model = models.Table
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
+class SectionImageInline(CompactInline):
     model = models.SectionImage
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
-        #if obj:
-            #return extra - obj.sections_set.count()
         return extra
 
 
 class SectionAdmin(admin.ModelAdmin):
     inlines = [
         SectionImageInline,
+        TableInline,
+        BlockInline,
+        FilterItemInline,
+        CaruselItemInline,
+        MaplItemInline,
     ]
     list_display = (
         'id',
@@ -115,16 +160,18 @@ class SectionAdmin(admin.ModelAdmin):
     )
     list_filter = ('page',)
     search_fields = ('slug',)
+    class Media:
+        js = (
+            static('admin/js/section.js'),
+            )
 
-class SectionInline(admin.TabularInline):
+class SectionInline(CompactInline):
     model = models.Section
     inlines = [
         SectionImageInline,
     ]
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
-        #if obj:
-            #return extra - obj.sections_set.count()
         return extra
 
 class PageAdmin(admin.ModelAdmin):
@@ -143,11 +190,11 @@ class PageAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = ('created_at', 'updated_at')
+    list_filter = (('created_at', DateRangeFilter), ('updated_at', DateRangeFilter))
     search_fields = ('slug',)
     date_hierarchy = 'created_at'
     
-class TableItemInline(admin.TabularInline):
+class TableItemInline(CompactInline):
     model = models.TableItem
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
@@ -157,8 +204,16 @@ class TableAdmin(admin.ModelAdmin):
     inlines = [
         TableItemInline,
     ]
-    list_display = ('id', 'title', 'section', 'position', 'animate')
+    list_display = ('id', 'title', 'section', 'pos', 'animate')
     raw_id_fields = ('section',)
+
+    def has_add_permission(self, request):
+        base_add_permission = super(TableAdmin, self).has_add_permission(request)
+        if base_add_permission:
+            count = models.Table.objects.all().count()
+            if count < 2:
+                return True
+        return False
 
 class TableItemAdmin(admin.ModelAdmin):
 
@@ -181,3 +236,4 @@ _register(models.SectionImage, SectionImageAdmin)
 _register(models.Section, SectionAdmin)
 _register(models.Table, TableAdmin)
 _register(models.TableItem, TableItemAdmin)
+_register(models.Feedback, FeedbackAdmin)
