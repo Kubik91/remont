@@ -1,0 +1,17 @@
+<header>
+    <nav class="navbar navbar-light navbar-expand-md bg-inverse">
+        <button class="navbar-toggler" aria-expanded="false" aria-controls="navbarsExampleDefault" aria-label="Toggle navigation" type="button" data-target="#navbarsExampleDefault" data-toggle="collapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="/">Application name</a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarsExampleDefault">
+            <ul class="nav navbar-nav">
+                {% for page in pages %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ page.slug }}"><span style="font-size:15px;">{{ page.title }}</span></a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </nav>
+</header>

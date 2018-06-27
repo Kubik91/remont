@@ -1,0 +1,10 @@
+.section, .section > .title{
+    position: relative;
+}
+.section > .title{
+    width: 100%;
+    text-align: center;
+}
+.before{
+    opacity: 0 !important;
+}

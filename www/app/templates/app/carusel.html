@@ -1,0 +1,73 @@
+{% load static sections sekizai_tags %}
+{% addtoblock "css" %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/flickity.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/carusel.css' %}" />
+{% endaddtoblock %}
+{% addtoblock "js_ready" %}
+    <script src="{% static 'js/flickity.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/bg-lazyload.js' %}"></script>
+{% endaddtoblock %}
+<section class="section carusel">
+    <div class="carousel main-carusel" id="{{'carusel'|uniq|stat_uniq}}">
+        {% addtoblock "js_ready" %}
+<script>
+function play(cont) {
+    cont.player.play()
+}
+function enablePlay(cont){
+    if(cont.player.state == 'stopped' && cont.options.autoPlay){
+        setTimeout(play, cont.options.autoPlay, cont)
+    }
+}
+function beforeAnimate(el) {
+    $(el.selectedElement).children(".text").addClass('before').removeClass('animated');
+}
+function afterAnimate(el){
+    $(el.selectedElement).children(".text").addClass('animated').removeClass('before');
+}
+</script>
+<script>
+$('#{{''|stat_uniq}}').flickity({
+    cellAlign: 'center',
+    bgLazyLoad: 2,
+    wrapAround: true,
+    draggable: true,
+    cellSelector: '.carousel-cell',
+    setGallerySize: false,
+    pageDots: false,
+    autoPlay: 5000,
+    on:{
+        bgLazyLoad: function(event, element){
+            $(element).children(".text").visible(animate);
+        },
+        change: function(){
+            beforeAnimate(this);
+            enablePlay(this);
+        },
+        settle: function(){
+            afterAnimate(this);
+        }
+    }
+});
+</script>
+        {% endaddtoblock %}
+        <div style="padding-bottom:30%; position:relative; left:0; right:0;"></div>
+        {% for item in carusel %}
+            <div class="carousel-cell" data-flickity-bg-lazyload="{{ item.image.crop.1500x500 }}">
+                <div class="text
+                    {% if item.animate %}
+                         before
+                        {{ item.animate }}
+                        {% addtoblock "js_ready" %}
+                            <script>
+                                $('.carousel-cell > .text').visible(animate);
+                            </script>
+                        {% endaddtoblock %}
+                    {% endif %}
+                ">
+                {{ item.text|safe }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>

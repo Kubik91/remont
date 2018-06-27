@@ -1,0 +1,20 @@
+{% extends "app/layout.html" %}
+{% load sections sekizai_tags %}
+{% block content %}
+    {{ ''|reset_uniq }}
+    {% block section %}
+        {% for section in page.sections.all %}
+            {% if section.section_type == 'block' %}
+                {% render_sec_block section %}
+            {% elif section.section_type == 'table' %}
+                {% render_table section %}
+            {% elif section.section_type == 'carusel' %}
+                {% render_carusel section %}
+            {% elif section.section_type == 'filter' %}
+                {% render_filter section %}
+            {% elif section.section_type == 'map' %}
+                {% render_map section %}
+            {% endif %}
+        {% endfor %}
+    {% endblock %}
+{% endblock %}

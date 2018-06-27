@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "remont", "remont\remont.pyproj", "{F5BDFD6F-A62E-4BBF-8648-2703D002BBC2}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "www", "www\remont.pyproj", "{F5BDFD6F-A62E-4BBF-8648-2703D002BBC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

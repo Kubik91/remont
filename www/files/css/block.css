@@ -1,0 +1,44 @@
+﻿.section.block, .section > .section-block{
+    position: relative;
+}
+.section.block {
+    overflow: hidden;
+    background-size: cover;
+}
+.section > .section-block {
+    padding: 20px 10px;
+}
+.section.block::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, .4);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+.section-block {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: stretch;
+}
+.block-text{
+    display: flex;
+    flex-direction: column;
+}
+.block-text > .btn{
+    margin-top: auto;
+}
+.reverse {
+    flex-direction: row-reverse;
+}
+@media all and (max-width:768px) {
+    .section-block {
+        flex-direction: column !important;
+        align-items: stretch;
+    }
+}

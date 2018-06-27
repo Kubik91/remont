@@ -1,0 +1,116 @@
+/* Fade CSS */
+
+.flickity-slider {
+    transform: none !important;
+}
+
+.carousel-cell {
+    left: 0 !important;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: -1;
+}
+
+.carousel-cell.is-selected {
+    opacity: 1;
+    z-index: 0
+}
+.carousel-cell {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+}
+.flickity-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.flickity-enabled.is-draggable .flickity-viewport, .flickity-enabled.is-draggable .flickity-viewport.is-pointer-down{
+    cursor: default;
+}
+.carousel-cell > .text {
+    position: relative;
+    align-items: flex-start;
+    height: 100%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px 0 20px 20px;
+}
+
+.flickity-button {
+    z-index: 5;
+    transition: left 600ms cubic-bezier(0.6, -0.28, 0.735, 0.045), right 600ms cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 600ms step-end;
+}
+.flickity-button {
+    opacity: 0;
+}
+.flickity-button.previous {
+    left: -30px;
+}
+.flickity-button.next {
+    right: -30px;
+}
+.main-carusel:hover .flickity-button.previous, .main-carusel:focus .flickity-button.previous, .main-carusel:active .flickity-button.previous {
+    left: 25px;
+    opacity: 1;
+    transition: left 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 600ms step-start;
+}
+.main-carusel:hover .flickity-button.next, .main-carusel:focus .flickity-button.next, .main-carusel:active .flickity-button.next {
+    right: 25px;
+    opacity: 1;
+    transition: right 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 600ms step-start;
+}
+.carousel-cell .text, .carousel-cell .text h5 {
+    font-size: 1vw;
+    line-height: 1vw;
+}
+
+.carousel-cell .text h1, .carousel-cell .text h2, .carousel-cell .text h3, .carousel-cell .text h4, .carousel-cell .text h5 {
+    margin: 1.4vw 0;
+    color: inherit;
+}
+
+.carousel-cell .text h1 {
+    font-size: 3vw;
+    line-height: 3vw;
+}
+
+.carousel-cell .text h2 {
+    font-size: 2.1vw;
+    line-height: 2.1vw;
+}
+
+.carousel-cell .text h3 {
+    font-size: 1.7vw;
+    line-height: 1.7vw;
+}
+
+.carousel-cell .text h4 {
+    font-size: 1.3vw;
+    line-height: 1.3vw;
+}
+
+.carousel-cell .text a, .carousel-cell .btn {
+    font-size: 1vw;
+    line-height: 1vw;
+}
+
+.carousel-cell .btn {
+    position: absolute;
+    top: 60%;
+    margin: 0 0 2vw 3vw;
+    padding: 0.4vw 0.8vw;
+}
+
+.carousel-cell .text .btn {
+    position: static;
+    margin: 1vw;
+}
+
+.carousel-cell .text br {
+    content: "";
+}
