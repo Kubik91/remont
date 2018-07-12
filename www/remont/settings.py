@@ -37,19 +37,9 @@ INSTALLED_APPS = [
     'ckeditor',
     'jet.dashboard',
     'jet',
-    #'django_admin_generator',
-    #'django_adminlte',
-     # Optional: Django admin theme (must be before django.contrib.admin)
-    #'django_adminlte_theme',
-     # Add your apps here to enable them
-    #'crispy_forms',
-    #'django_select2',
     'versatileimagefield',
     'image_cropping',
-    #'django_ajax',
-    #'imagekit',
     'sekizai',
-    #'cruds_adminlte',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -64,7 +54,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

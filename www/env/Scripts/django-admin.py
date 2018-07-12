@@ -1,4 +1,4 @@
-#!D:\Server\data\htdocs\remont.loc\remont\remont\env\Scripts\python.exe
+#!D:\Server\data\htdocs\remont.loc\www\env\Scripts\python.exe
 from django.core import management
 
 if __name__ == "__main__":

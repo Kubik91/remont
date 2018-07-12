@@ -3,6 +3,7 @@ from django.db.models import Max, Min
 from unidecode import unidecode
 from django.conf import settings
 from django.template.defaultfilters import slugify
+from sekizai.helpers import get_varname
 
 import json
 
@@ -19,12 +20,13 @@ def render_sec_block(context, section):
     image = None
     if hasattr(section, 'image'):
         image = section.image
-    sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
+    #sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
     return {
         'sec_block':sec_block,
         'image':image,
         'section':section,
-        sezikai_ctx_var: context[sezikai_ctx_var]
+        get_varname(): context[get_varname()],
+        #sezikai_ctx_var: context[sezikai_ctx_var]
     }
 
 @register.inclusion_tag('app/filter.html', takes_context=True)

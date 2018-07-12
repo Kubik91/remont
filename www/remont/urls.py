@@ -22,7 +22,7 @@ admin.autodiscover()
 urlpatterns = [
     # Examples:,
     
-    url(r'^$', app.views.home, name='home'),
+    url(r'^$', app.views.pages, name='home'),
     path('feedback/', app.views.feedback, name='feedback'),
     url(r'^login/$',
         django.contrib.auth.views.login,
@@ -53,4 +53,3 @@ urlpatterns = [
     path('<slug>', app.views.pages, name='pages')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-#urlpatterns += crud_for_app('app')

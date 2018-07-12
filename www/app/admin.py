@@ -167,12 +167,10 @@ class SectionAdmin(admin.ModelAdmin):
 
 class SectionInline(CompactInline):
     model = models.Section
-    inlines = [
-        SectionImageInline,
-    ]
-    def get_extra(self, request, obj=None, **kwargs):
-        extra = 0
-        return extra
+    extra = 0
+    #def get_extra(self, request, obj=None, **kwargs):
+    #    extra = 0
+    #    return extra
 
 class PageAdmin(admin.ModelAdmin):
     inlines = [

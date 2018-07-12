@@ -1,8 +1,9 @@
 {% load static sekizai_tags %}
+
+{% block section %}
 {% addtoblock "css" %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/block.css' %}" />
 {% endaddtoblock %}
-{% block section %}
     <section class="section block" {% if sec_block.background %} style="background-image: url('{{ sec_block.background.url }}');" {% endif %} >
         {% if section.title %}
             <h2 class="title {% if section.title_animate %}before {{ section.title_animate }}{% endif %}">{{ section.title }}</h2>
@@ -12,11 +13,11 @@
                 <img src="{{ image.image.thumbnail.400x400 }}" 
                      {% if image.animate %}
                          class="before {{ image.animate }}"
-                        {% addtoblock "js_ready" %}
-                            <script>
-                                $('.section-block > img').visible(animate);
-                            </script>
-                        {% endaddtoblock %}
+{% addtoblock "js_ready" %}
+<script>
+    $('.section-block > img').visible(animate);
+</script>
+{% endaddtoblock %}
                     {% endif %} 
                 />
             {% endif %}
@@ -24,11 +25,11 @@
                 {% if sec_block.animate %}
                      before
                     {{ sec_block.animate }}
-                    {% addtoblock "js_ready" %}
-                        <script>
-                            $('.section-block > .block-text').visible(animate);
-                        </script>
-                    {% endaddtoblock %}
+{% addtoblock "js_ready" %}
+    <script>
+        $('.section-block > .block-text').visible(animate);
+    </script>
+{% endaddtoblock %}
                 {% endif %}
             ">
                 <div class="text">{{ sec_block.text }}</div>

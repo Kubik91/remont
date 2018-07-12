@@ -13,7 +13,21 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
+
 import os
+import sys
+import site
+
+BASE_DIR = os.path.dirname(__file__)
+
+
+site_packages = os.path.abspath(BASE_DIR + 'env/Lib/site-packages/')
+
+# Add the site-packages directory.
+
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+'..'))
+site.addsitedir(site_packages)
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "remont.settings")
 

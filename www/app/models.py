@@ -135,7 +135,6 @@ class Page(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        super(Page, self).save(*args, **kwargs)
         last = Page.objects.aggregate(max_posmenu=Max('posmenu')).get('max_posmenu')
         if last:
             self.posmenu = last + 1
@@ -195,8 +194,15 @@ class Section(models.Model):
         rel.remove(self.section_type);
         if self.section_type == 'block' or (self.section_type == 'table' and self.table.all().count() < 2):
             rel.remove('image')
-        for sec_type in rel:
-            Section.objects.filter(pk=self.pk).sec_type.all().delete()
+        links = [f for f in Section._meta.get_fields()
+                #if (f.one_to_many or f.one_to_one)
+                if f.auto_created and not f.concrete
+        ]
+        if self.pk is not None:
+            for link in links:
+                if link.name in rel:
+                    if hasattr(self, link.name):
+                        objects = getattr(self, link.name).all().delete()
         last = Section.objects.aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
             self.pos = last + 1
