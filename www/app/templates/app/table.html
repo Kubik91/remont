@@ -1,61 +1,64 @@
 {% load static sections sekizai_tags %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/table.css' %}" />
-{% endaddtoblock %}
-{% block section %}
-    <section class="section tables">
-        {% if section.title %}
-            <h2 class="title {% if section.title_animate %}before {{ section.title_animate }}{% endif %}">{{ section.title }}</h2>
-        {% endif %}
-        <div class="section-table{% if image and image.position %}reverse{% endif %}">
-            {% if image %}
-                <img src="{{ image.image.thumbnail.400x400 }}" 
-                     {% if image.animate %}
-                         class="before {{ image.animate }}"
-                        {% addtoblock "js_ready" %}
-                            <script>
-                                $('.section-table > img').visible(animate);
-                            </script>
-                        {% endaddtoblock %}
-                    {% endif %} 
-                />
+
+{% if table %}
+    {% addtoblock "css" %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/table.css' %}" />
+    {% endaddtoblock %}
+    {% block section %}
+        <section class="section tables">
+            {% if section.title %}
+                <h2 class="title {% if section.title_animate %}before {{ section.title_animate }}{% endif %}">{{ section.title }}</h2>
             {% endif %}
-            {% for table in tables %}
-                {% if table.table_items.all|length %}
-                    <table style="width:{% if tables|length > 1 or image %}40%{% else %}90%{% endif %}" class="table {% if table.animate %}
-                                            before 
-                                            {{ table.animate }}
-                                            {% addtoblock "js_ready" %}
-                                                <script>
-                                                    $('.section-table > .table').visible(animate);
-                                                </script>
-                                            {% endaddtoblock %}
-                                        {% endif %}">
-                        {% if table.title %}
-                            <caption class="caption">{{ table.title }}</caption>
-                        {% endif %}
-                        <tbody>
-                            {% if table.table_items.all|min:'row' == 1 %}
-                                <tr>
-                                    {% for col in table.table_items.all|max:'col'|getRange %}
-                                        <th scope="col">{{ table.table_items.all|allRow:'1'|allCol:col|getValue }}</th>
-                                    {% endfor %}
-                                </tr>
-                            {% endif %}
-                            {% for row in table.table_items.all|max:'row'|getRange:'2' %}
-                                <tr>
-                                    {% if table.table_items.all|allRow:row|allCol:1|getValue %}
-                                        <th scope="row">{{ table.table_items.all|allRow:row|allCol:1|getValue }}</th>
-                                    {% endif %}
-                                    {% for col in table.table_items.all|max:'col'|getRange:'2' %}
-                                        <td>{{ table.table_items.all|allRow:row|allCol:col|getValue }}</td>
-                                    {% endfor %}
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+            <div class="section-table{% if image and image.position %}reverse{% endif %}">
+                {% if image %}
+                    <img src="{{ image.image.thumbnail.400x400 }}" 
+                         {% if image.animate %}
+                             class="before {{ image.animate }}"
+                            {% addtoblock "js_ready" %}
+<script>
+    $('.section-table > img').visible(animate);
+</script>
+                            {% endaddtoblock %}
+                        {% endif %} 
+                    />
                 {% endif %}
-            {% endfor %}
-        </div>
-    </section>
-{% endblock %}
+                {% for table in tables %}
+                    {% if table.table_items.all|length %}
+                        <table style="width:{% if tables|length > 1 or image %}40%{% else %}90%{% endif %}" class="table {% if table.animate %}
+                                                before 
+                                                {{ table.animate }}
+                                                {% addtoblock "js_ready" %}
+<script>
+    $('.section-table > .table').visible(animate);
+</script>
+                                                {% endaddtoblock %}
+                                            {% endif %}">
+                            {% if table.title %}
+                                <caption class="caption">{{ table.title }}</caption>
+                            {% endif %}
+                            <tbody>
+                                {% if table.table_items.all|min:'row' == 1 %}
+                                    <tr>
+                                        {% for col in table.table_items.all|max:'col'|getRange %}
+                                            <th scope="col">{{ table.table_items.all|allRow:'1'|allCol:col|getValue }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                {% endif %}
+                                {% for row in table.table_items.all|max:'row'|getRange:'2' %}
+                                    <tr>
+                                        {% if table.table_items.all|allRow:row|allCol:1|getValue %}
+                                            <th scope="row">{{ table.table_items.all|allRow:row|allCol:1|getValue }}</th>
+                                        {% endif %}
+                                        {% for col in table.table_items.all|max:'col'|getRange:'2' %}
+                                            <td>{{ table.table_items.all|allRow:row|allCol:col|getValue }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endblock %}
+{% endif %}

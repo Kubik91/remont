@@ -1,15 +1,17 @@
 {% load static sections sekizai_tags %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/flickity.min.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/carusel.css' %}" />
-{% endaddtoblock %}
-{% addtoblock "js_ready" %}
-    <script src="{% static 'js/flickity.pkgd.min.js' %}"></script>
-    <script src="{% static 'js/bg-lazyload.js' %}"></script>
-{% endaddtoblock %}
-<section class="section carusel">
-    <div class="carousel main-carusel" id="{{'carusel'|uniq|stat_uniq}}">
-        {% addtoblock "js_ready" %}
+
+{% if carusel %}
+    {% addtoblock "css" %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/flickity.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/carusel.css' %}" />
+    {% endaddtoblock %}
+    {% addtoblock "js_ready" %}
+<script src="{% static 'js/flickity.pkgd.min.js' %}"></script>
+<script src="{% static 'js/bg-lazyload.js' %}"></script>
+    {% endaddtoblock %}
+    <section class="section carusel">
+        <div class="carousel main-carusel" id="{{'carusel'|uniq|stat_uniq}}">
+            {% addtoblock "js_ready" %}
 <script>
 function play(cont) {
     cont.player.play()
@@ -50,24 +52,25 @@ $('#{{''|stat_uniq}}').flickity({
     }
 });
 </script>
-        {% endaddtoblock %}
-        <div style="padding-bottom:30%; position:relative; left:0; right:0;"></div>
-        {% for item in carusel %}
-            <div class="carousel-cell" data-flickity-bg-lazyload="{{ item.image.crop.1500x500 }}">
-                <div class="text
-                    {% if item.animate %}
-                         before
-                        {{ item.animate }}
-                        {% addtoblock "js_ready" %}
-                            <script>
-                                $('.carousel-cell > .text').visible(animate);
-                            </script>
-                        {% endaddtoblock %}
-                    {% endif %}
-                ">
-                {{ item.text|safe }}
+            {% endaddtoblock %}
+            <div style="padding-bottom:30%; position:relative; left:0; right:0;"></div>
+            {% for item in carusel %}
+                <div class="carousel-cell" data-flickity-bg-lazyload="{{ item.image.crop.1500x500 }}">
+                    <div class="text
+                        {% if item.animate %}
+                             before
+                            {{ item.animate }}
+                            {% addtoblock "js_ready" %}
+<script>
+    $('.carousel-cell > .text').visible(animate);
+</script>
+                            {% endaddtoblock %}
+                        {% endif %}
+                    ">
+                    {{ item.text|safe }}
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
-</section>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}

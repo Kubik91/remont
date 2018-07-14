@@ -15,24 +15,22 @@ stat_un = None
 @register.inclusion_tag('app/block.html', takes_context=True)
 def render_sec_block(context, section):
     if not hasattr(section, 'block'):
-        return
+        return context
     sec_block = section.block
     image = None
     if hasattr(section, 'image'):
         image = section.image
-    #sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
     return {
         'sec_block':sec_block,
         'image':image,
         'section':section,
         get_varname(): context[get_varname()],
-        #sezikai_ctx_var: context[sezikai_ctx_var]
     }
 
 @register.inclusion_tag('app/filter.html', takes_context=True)
 def render_filter(context, section):
     if not hasattr(section, 'filter'):
-        return
+        return context
     filter = section.filter.all()
     if filter.count() < 1:
         return
@@ -40,44 +38,41 @@ def render_filter(context, section):
     for fil in filter:
         categories += fil.categories.all()
     categories = list(set(categories))
-    sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
     return {
         'filter':filter,
         'categories':categories,
-        sezikai_ctx_var: context[sezikai_ctx_var]
+        get_varname(): context[get_varname()],
     }
 
 @register.inclusion_tag('app/carusel.html', takes_context=True)
 def render_carusel(context, section):
     if not hasattr(section, 'carusel'):
-        return
+        return context
     carusel = section.carusel.all()
     if carusel.count() < 1:
         return
-    sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
     return {
         'carusel':carusel,
-        sezikai_ctx_var: context[sezikai_ctx_var]
+        get_varname(): context[get_varname()],
     }
 
 
 @register.inclusion_tag('app/map.html', takes_context=True)
 def render_map(context, section):
     if not hasattr(section, 'map'):
-        return
+        return context
     map = section.map.all()
     if map.count() < 1:
         return
-    sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
     return {
         'map':map,
-        sezikai_ctx_var: context[sezikai_ctx_var]
+        get_varname(): context[get_varname()],
     }
 
 @register.inclusion_tag('app/table.html', takes_context=True)
 def render_table(context, section):
     if not hasattr(section, 'table'):
-        return
+        return context
     tables = section.table.all()
     if tables.count() < 1:
         return
@@ -85,12 +80,11 @@ def render_table(context, section):
     if not len(tables) > 1:
         if hasattr(section, 'image'):
             image = section.image
-    sezikai_ctx_var = getattr(settings, 'SEKIZAI_VARNAME', 'SEKIZAI_CONTENT_HOLDER')
     return {
         'tables':tables,
         'image':image,
         'section':section,
-        sezikai_ctx_var: context[sezikai_ctx_var]
+        get_varname(): context[get_varname()],
     }
 
 

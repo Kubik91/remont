@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     h1.style.display = 'inline';
     anime.appendChild(h1);
     anime.id = "image-animation";
+    anime.style.display = 'inline-block';
     h1.style.display = 'inline-block';
     select = document.getElementById('id_animate');
     select.parentElement.appendChild(anime);

@@ -1,75 +1,78 @@
 {% load static sections sekizai_tags %}
-{% addtoblock "css" %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/filter.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/direction-reveal.css' %}" />
-    <style>
-        .veil{
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-    </style>
-{% endaddtoblock %}
-{% addtoblock "js_ready" %}
-    <script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
-    <script src="{% static 'js/packery-mode.pkgd.min.js' %}"></script>
-    <script src="{% static 'js/direction-reveal.js' %}"></script>
-    <script>
-        var isotope_{{'filter'|uniq|stat_uniq}} = $('#{{''|stat_uniq}}').isotope({"layoutMode": "packery","itemSelector":".grid-item"});
-        $('.filters-button-group').on('click', 'button', function () {
-            var filterValue = $(this).attr('data-filter');
-            $('.filters-button-group>.button').removeClass('is-checked');
-            $(this).addClass('is-checked');
-            isotope_{{''|stat_uniq}}.isotope({ filter: filterValue });
-        });
-    </script>
-{% endaddtoblock %}
-<section class="section filter">
-    {% if categories %}
-    <div class="button-group filters-button-group">
-        <button class="button is-checked" type="button" data-filter="*">Всё</button>
-        {% for cat in categories %}
-            <button class="button" type="button" data-filter=".{{ cat.title|slug }}">{{ cat.title }}</button>
-        {% endfor %}
-    </div>
-    {% endif %}
-    <div class="filter" id="{{ ''|stat_uniq }}">
-        <div class="grid direction-reveal direction-reveal--slide">
-            {% for fil in filter %}
-            <div class="grid-item 
-                 {% for fil_cat in fil.categories.all %}
-                    {{ fil_cat.title|slug }}
-                {% endfor %}
-                 width{{fil.width}}
-                 height{{fil.height}}
-                {% if fil.animate %}
-                    before 
-                    {{ fil.animate }}
-                    {% addtoblock "js_ready" %}
-                        <script>
-                            $('.filter > .grid > .grid-item').visible(animate);
-                        </script>
-                    {% endaddtoblock %}
-                {% endif %}
-            ">
-                <div class="filter-item direction-reveal__card" style="background: #FFF; background-image: url('{{ fil.image.thumbnail.500x500 }}');">
-                    <div class="veil direction-reveal__overlay direction-reveal__anim--in">
-                        <p>{{ fil.text }}</p>
-                        {% if fil.button_text and fil.button_url %}
-                            {% if '#modal' in fil.button_url %}
-                                <button class="btn btn-success block_button" type="button" data-toggle="modal">{{ fil.button_text }}</button>
-                            {% else %}
-                                <a href="{{ fil.button_url }}">
-                                    <button class="btn btn-success block_button" type="button">{{ fil.button_text }}</button>
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+
+{% if fil %}
+    {% addtoblock "css" %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/filter.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/direction-reveal.css' %}" />
+<style>
+    .veil{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+</style>
+    {% endaddtoblock %}
+    {% addtoblock "js_ready" %}
+<script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+<script src="{% static 'js/packery-mode.pkgd.min.js' %}"></script>
+<script src="{% static 'js/direction-reveal.js' %}"></script>
+<script>
+    var isotope_{{'filter'|uniq|stat_uniq}} = $('#{{''|stat_uniq}}').isotope({"layoutMode": "packery","itemSelector":".grid-item"});
+    $('.filters-button-group').on('click', 'button', function () {
+        var filterValue = $(this).attr('data-filter');
+        $('.filters-button-group>.button').removeClass('is-checked');
+        $(this).addClass('is-checked');
+        isotope_{{''|stat_uniq}}.isotope({ filter: filterValue });
+    });
+</script>
+    {% endaddtoblock %}
+    <section class="section filter">
+        {% if categories %}
+        <div class="button-group filters-button-group">
+            <button class="button is-checked" type="button" data-filter="*">Всё</button>
+            {% for cat in categories %}
+                <button class="button" type="button" data-filter=".{{ cat.title|slug }}">{{ cat.title }}</button>
             {% endfor %}
         </div>
-    </div>
-</section>
+        {% endif %}
+        <div class="filter" id="{{ ''|stat_uniq }}">
+            <div class="grid direction-reveal direction-reveal--slide">
+                {% for fil in filter %}
+                <div class="grid-item 
+                     {% for fil_cat in fil.categories.all %}
+                        {{ fil_cat.title|slug }}
+                    {% endfor %}
+                     width{{fil.width}}
+                     height{{fil.height}}
+                    {% if fil.animate %}
+                        before 
+                        {{ fil.animate }}
+                        {% addtoblock "js_ready" %}
+<script>
+    $('.filter > .grid > .grid-item').visible(animate);
+</script>
+                        {% endaddtoblock %}
+                    {% endif %}
+                ">
+                    <div class="filter-item direction-reveal__card" style="background: #FFF; background-image: url('{{ fil.image.thumbnail.500x500 }}');">
+                        <div class="veil direction-reveal__overlay direction-reveal__anim--in">
+                            <p>{{ fil.text }}</p>
+                            {% if fil.button_text and fil.button_url %}
+                                {% if '#modal' in fil.button_url %}
+                                    <button class="btn btn-success block_button" type="button" data-toggle="modal">{{ fil.button_text }}</button>
+                                {% else %}
+                                    <a href="{{ fil.button_url }}">
+                                        <button class="btn btn-success block_button" type="button">{{ fil.button_text }}</button>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endif %}

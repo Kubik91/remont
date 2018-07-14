@@ -1,46 +1,48 @@
 {% load static sekizai_tags %}
 
-{% block section %}
+{% if sec_block %}
+    {% block section %}
 {% addtoblock "css" %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/block.css' %}" />
 {% endaddtoblock %}
-    <section class="section block" {% if sec_block.background %} style="background-image: url('{{ sec_block.background.url }}');" {% endif %} >
-        {% if section.title %}
-            <h2 class="title {% if section.title_animate %}before {{ section.title_animate }}{% endif %}">{{ section.title }}</h2>
-        {% endif %}
-        <div class="section-block block {% if image and image.position %}reverse{% endif %}">
-            {% if image %}
-                <img src="{{ image.image.thumbnail.400x400 }}" 
-                     {% if image.animate %}
-                         class="before {{ image.animate }}"
+        <section class="section block" {% if sec_block.background %} style="background-image: url('{{ sec_block.background.url }}');" {% endif %} >
+            {% if section.title %}
+                <h2 class="title {% if section.title_animate %}before {{ section.title_animate }}{% endif %}">{{ section.title }}</h2>
+            {% endif %}
+            <div class="section-block block {% if image and image.position %}reverse{% endif %}">
+                {% if image %}
+                    <img src="{{ image.image.thumbnail.400x400 }}" 
+                         {% if image.animate %}
+                             class="before {{ image.animate }}"
 {% addtoblock "js_ready" %}
 <script>
     $('.section-block > img').visible(animate);
 </script>
 {% endaddtoblock %}
-                    {% endif %} 
-                />
-            {% endif %}
-            <div class="block-text 
-                {% if sec_block.animate %}
-                     before
-                    {{ sec_block.animate }}
+                        {% endif %} 
+                    />
+                {% endif %}
+                <div class="block-text 
+                    {% if sec_block.animate %}
+                         before
+                        {{ sec_block.animate }}
 {% addtoblock "js_ready" %}
     <script>
         $('.section-block > .block-text').visible(animate);
     </script>
 {% endaddtoblock %}
-                {% endif %}
-            ">
-                <div class="text">{{ sec_block.text }}</div>
-                {% if sec_block.button_text and sec_block.button_url %}
-                    {% if sec_block.button_url == '#modal' %}
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal">{{ sec_block.button_text }}</button>
-                    {% else %}
-                    <a class="btn btn-success block_button modal_button" href="{{ sec_block.button_url }}">{{ sec_block.button_text }}</a>
                     {% endif %}
-                {% endif %}
+                ">
+                    <div class="text">{{ sec_block.text }}</div>
+                    {% if sec_block.button_text and sec_block.button_url %}
+                        {% if sec_block.button_url == '#modal' %}
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal">{{ sec_block.button_text }}</button>
+                        {% else %}
+                        <a class="btn btn-success block_button modal_button" href="{{ sec_block.button_url }}">{{ sec_block.button_text }}</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    </section>
-{% endblock %}
+        </section>
+    {% endblock %}
+{% endif %}
