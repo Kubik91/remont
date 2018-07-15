@@ -52,6 +52,13 @@ class CaruselItemAdmin(admin.ModelAdmin):
     )
     raw_id_fields = ('section',)
     search_fields = ('slug',)
+    class Media:
+        css = {
+            'all': (static('css/animate.min.css'),)
+        }
+        js = (
+            static('admin/js/animate.js'),
+            )
 
 
 class FilterCategoryAdmin(admin.ModelAdmin):
@@ -104,36 +111,42 @@ class MaplItemInline(CompactInline):
     model = models.MapItem.section.through
     verbose_name = "Карта"
     verbose_name_plural = "Карты"
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
 
 class CaruselItemInline(CompactInline):
     model = models.CaruselItem
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
 
 class FilterItemInline(CompactInline):
     model = models.FilterItem
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
 
 class BlockInline(CompactInline):
     model = models.Block
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
 
 class TableInline(CompactInline):
     model = models.Table
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
 
 class SectionImageInline(CompactInline):
     model = models.SectionImage
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
@@ -160,17 +173,23 @@ class SectionAdmin(admin.ModelAdmin):
     )
     list_filter = ('page',)
     search_fields = ('slug',)
+
     class Media:
+        css = {
+            'all': (static('css/animate.min.css'),)
+        }
         js = (
             static('admin/js/section.js'),
+            static('admin/js/animate.js'),
+            static('admin/js/bicycle.js'),
             )
 
 class SectionInline(CompactInline):
     model = models.Section
-    extra = 0
-    #def get_extra(self, request, obj=None, **kwargs):
-    #    extra = 0
-    #    return extra
+    show_change_link = True
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
 
 class PageAdmin(admin.ModelAdmin):
     inlines = [
@@ -191,9 +210,18 @@ class PageAdmin(admin.ModelAdmin):
     list_filter = (('created_at', DateRangeFilter), ('updated_at', DateRangeFilter))
     search_fields = ('slug',)
     date_hierarchy = 'created_at'
+    class Media:
+        css = {
+            'all': (static('css/animate.min.css'),)
+        }
+        js = (
+            static('admin/js/animate.js'),
+            static('admin/js/bicycle.js'),
+            )
     
 class TableItemInline(CompactInline):
     model = models.TableItem
+    show_change_link = True
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
@@ -212,6 +240,15 @@ class TableAdmin(admin.ModelAdmin):
             if count < 2:
                 return True
         return False
+
+    class Media:
+        css = {
+            'all': (static('css/animate.min.css'),)
+        }
+        js = (
+            static('admin/js/animate.js'),
+            static('admin/js/bicycle.js'),
+            )
 
 class TableItemAdmin(admin.ModelAdmin):
 

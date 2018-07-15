@@ -340,6 +340,7 @@
     <Content Include="app\templatetags\__pycache__\admin_menu.cpython-36.pyc" />
     <Content Include="app\templatetags\__pycache__\__init__.cpython-36.pyc" />
     <Content Include="files\admin\js\animate.js" />
+    <Content Include="files\admin\js\bicycle.js" />
     <Content Include="files\admin\js\section.js" />
     <Content Include="files\app\1content\bootstrap.css" />
     <Content Include="files\app\1content\bootstrap.min.css" />

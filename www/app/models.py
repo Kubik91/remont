@@ -135,9 +135,10 @@ class Page(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        last = Page.objects.aggregate(max_posmenu=Max('posmenu')).get('max_posmenu')
+        last = Page.objects.exclude(id=self.id).aggregate(max_posmenu=Max('posmenu')).get('max_posmenu')
         if last:
-            self.posmenu = last + 1
+            if self.posmenu > last + 1:
+                self.posmenu = last + 1
         else:
             self.posmenu = 1
         if self.posmenu and self.pk is None:
@@ -203,7 +204,7 @@ class Section(models.Model):
                 if link.name in rel:
                     if hasattr(self, link.name):
                         objects = getattr(self, link.name).all().delete()
-        last = Section.objects.aggregate(max_pos=Max('pos')).get('max_pos')
+        last = Section.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
             self.pos = last + 1
         else:
@@ -269,7 +270,7 @@ class FilterItem(models.Model):
             self.width = 1
         if not self.height:
             self.height = 1
-        last = FilterItem.objects.aggregate(max_pos=Max('pos')).get('max_pos')
+        last = FilterItem.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
             self.pos = last + 1
         else:
@@ -351,7 +352,7 @@ class Table(models.Model):
             raise ValidationError("В одной секции может быть максимум 2 таблицы!")
 
     def save(self, *args, **kwargs):
-        last = Table.objects.aggregate(max_pos=Max('pos')).get('max_pos')
+        last = Table.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
             self.pos = last + 1
         else:
