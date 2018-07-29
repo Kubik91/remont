@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import posixpath
+from configparser import RawConfigParser
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -126,6 +127,15 @@ USE_L10N = True
 
 USE_TZ = True
 
+config = RawConfigParser()
+config.read('remont/smtp.ini')
+
+EMAIL_HOST = config.get('smtp', 'server')
+EMAIL_HOST_USER = config.get('smtp', 'user')
+EMAIL_HOST_PASSWORD = config.get('smtp', 'password')
+EMAIL_PORT = config.get('smtp', 'port')
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = config.get('smtp', 'tls')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/

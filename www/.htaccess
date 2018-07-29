@@ -1,8 +1,6 @@
-RewriteEngine on
-AddDefaultCharset utf-8
-RewriteBase /
-# запрет просмотра директорий без index-а
-Options -Indexes
-
-    RewriteCond %{REQUEST_URI} \.(htaccess|htpasswd|svn|git)
-    RewriteRule \.(htaccess|htpasswd|svn|git) - [F]
+RewriteEngine On
+Options +FollowSymLinks
+#SetHandler fcgid-script
+Options +ExecCGI
+Order allow,deny
+Allow from all

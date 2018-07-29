@@ -34,8 +34,8 @@ class FeedbackForm(forms.ModelForm):
         Field('text', rows="3", css_class='input-xlarge'),
         Field('image'),
         FormActions(
-            Submit('save_changes', 'Save changes', css_class="btn-primary"),
-            Submit('cancel', 'Cancel'),
+            Submit('send_feedback', 'Отправить заявку', css_class="btn-primary"),
+            Submit('close', 'Закрыть'),
         )
     )
 

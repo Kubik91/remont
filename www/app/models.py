@@ -107,7 +107,7 @@ class HomePage(models.Model):
     page = models.OneToOneField('Page', models.CASCADE, related_name="homePage")
 
     def __str__(self):
-        return f'Домашняя страница {page.title}'
+        return f'Домашняя страница {self.page.title}'
 
     class Meta:
         managed = True
@@ -137,22 +137,23 @@ class Page(models.Model):
             self.slug = slugify(self.title)
         last = Page.objects.exclude(id=self.id).aggregate(max_posmenu=Max('posmenu')).get('max_posmenu')
         if last:
-            if self.posmenu > last + 1:
+            if self.posmenu and self.posmenu > last + 1:
                 self.posmenu = last + 1
+            
+            if self.posmenu and self.pk is None:
+                if self.posmenu > last:
+                    self.posmenu = last + 1
+                else:
+                    Page.objects.filter(posmenu__gte=self.posmenu).update(posmenu=F('posmenu') + 1)
+            else:
+                orig = Page.objects.get(pk=self.pk)
+                if orig.posmenu != self.posmenu:
+                    if orig.posmenu < self.posmenu:
+                        Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(posmenu=F('posmenu') - 1)
+                    if orig.posmenu > self.posmenu:
+                        Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(posmenu=F('posmenu') + 1)
         else:
             self.posmenu = 1
-        if self.posmenu and self.pk is None:
-            if self.posmenu > last:
-                self.posmenu = last + 1
-            else:
-                Page.objects.filter(posmenu__gte=self.posmenu).update(posmenu=F('posmenu') + 1)
-        else:
-            orig = Page.objects.get(pk=self.pk)
-            if orig.posmenu != self.posmenu:
-                if orig.posmenu < self.posmenu:
-                    Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(posmenu=F('posmenu') - 1)
-                if orig.posmenu > self.posmenu:
-                    Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(posmenu=F('posmenu') + 1)
         super(Page, self).save(*args, **kwargs)
 
     class Meta:
@@ -206,21 +207,22 @@ class Section(models.Model):
                         objects = getattr(self, link.name).all().delete()
         last = Section.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
-            self.pos = last + 1
+            if self.pos and self.pos > last:
+                self.pos = last + 1
+            if self.pos and self.pk is None:
+                if self.pos > last:
+                    self.pos = last + 1
+                else:
+                    Section.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
+            else:
+                orig = Section.objects.get(pk=self.pk)
+                if orig.pos != self.pos:
+                    if orig.pos < self.pos:
+                        Section.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') - 1)
+                    if orig.pos > self.pos:
+                        Section.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') + 1)
         else:
             self.pos = 1
-        if self.pos and self.pk is None:
-            if self.pos > last:
-                self.pos = last + 1
-            else:
-                Section.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
-        else:
-            orig = Section.objects.get(pk=self.pk)
-            if orig.pos != self.pos:
-                if orig.pos < self.pos:
-                    Section.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') - 1)
-                if orig.pos > self.pos:
-                    Section.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') + 1)
         super(Section, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -272,21 +274,22 @@ class FilterItem(models.Model):
             self.height = 1
         last = FilterItem.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
-            self.pos = last + 1
+            if self.pos and self.pos > last:
+                self.pos = last + 1
+            if self.pos and self.pk is None:
+                if self.pos > last:
+                    self.pos = last + 1
+                else:
+                    FilterItem.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
+            else:
+                orig = FilterItem.objects.get(pk=self.pk)
+                if orig.pos != self.pos:
+                    if orig.pos < self.pos:
+                        FilterItem.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') - 1)
+                    if orig.pos > self.pos:
+                        FilterItem.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') + 1)
         else:
             self.pos = 1
-        if self.pos and self.pk is None:
-            if self.pos > last:
-                self.pos = last + 1
-            else:
-                FilterItem.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
-        else:
-            orig = FilterItem.objects.get(pk=self.pk)
-            if orig.pos != self.pos:
-                if orig.pos < self.pos:
-                    FilterItem.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') - 1)
-                if orig.pos > self.pos:
-                    FilterItem.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') + 1)
         super(FilterItem, self).save(*args, **kwargs)
 
     class Meta:
@@ -354,21 +357,22 @@ class Table(models.Model):
     def save(self, *args, **kwargs):
         last = Table.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
-            self.pos = last + 1
+            if self.pos and self.pos > last:
+                self.pos = last + 1
+            if self.pos and self.pk is None:
+                if self.pos > last:
+                    self.pos = last + 1
+                else:
+                    Table.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
+            else:
+                orig = Table.objects.get(pk=self.pk)
+                if orig.pos != self.pos:
+                    if orig.pos < self.pos:
+                        Table.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') - 1)
+                    if orig.pos > self.pos:
+                        Table.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') + 1)
         else:
             self.pos = 1
-        if self.pos and self.pk is None:
-            if self.pos > last:
-                self.pos = last + 1
-            else:
-                Table.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
-        else:
-            orig = Table.objects.get(pk=self.pk)
-            if orig.pos != self.pos:
-                if orig.pos < self.pos:
-                    Table.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') - 1)
-                if orig.pos > self.pos:
-                    Table.objects.filter(pos__gte=self.pos).filter(pos__lte=orig.pos).update(pos=F('pos') + 1)
         super(Table, self).save(*args, **kwargs)
 
     class Meta:

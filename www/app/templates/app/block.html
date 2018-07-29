@@ -33,7 +33,7 @@
 {% endaddtoblock %}
                     {% endif %}
                 ">
-                    <div class="text">{{ sec_block.text }}</div>
+                    <div class="text">{{ sec_block.text|safe }}</div>
                     {% if sec_block.button_text and sec_block.button_url %}
                         {% if sec_block.button_url == '#modal' %}
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal">{{ sec_block.button_text }}</button>

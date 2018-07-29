@@ -428,6 +428,9 @@
     <Content Include="media\sectionimage\photo15686121_456241455.jpg" />
     <Content Include="media\sectionimage\photo15686121_456241455_cpfMxGF.jpg" />
     <Content Include="media\sectionimage\photo15686121_456241455_msyFgmj.jpg" />
+    <Content Include="remont\smtp.ini">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\templates\app\layout.html" />
