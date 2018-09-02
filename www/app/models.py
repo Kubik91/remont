@@ -347,7 +347,7 @@ class Table(models.Model):
         if self.title:
             return f'Таблица {self.title}'
         else:
-            return f'Таблица {section}'
+            return f'Таблица {self.section}'
 
     def clean(self):
         tables = Table.objects.filter(section=self.section).count()

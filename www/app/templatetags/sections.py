@@ -75,7 +75,7 @@ def render_table(context, section):
         return context
     tables = section.table.all()
     if tables.count() < 1:
-        return
+        return context
     image = None
     if not len(tables) > 1:
         if hasattr(section, 'image'):

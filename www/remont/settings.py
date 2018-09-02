@@ -128,21 +128,21 @@ USE_L10N = True
 USE_TZ = True
 
 config = RawConfigParser()
-config.read('remont/smtp.ini')
+config.read('./smtp.ini')
 
-EMAIL_HOST = config.get('smtp', 'server')
-EMAIL_HOST_USER = config.get('smtp', 'user')
-EMAIL_HOST_PASSWORD = config.get('smtp', 'password')
-EMAIL_PORT = config.get('smtp', 'port')
-EMAIL_USE_SSL = False
-EMAIL_USE_TLS = config.get('smtp', 'tls')
+#EMAIL_HOST = config.get('smtp', 'server')
+#EMAIL_HOST_USER = config.get('smtp', 'user')
+#EMAIL_HOST_PASSWORD = config.get('smtp', 'password')
+#EMAIL_PORT = config.get('smtp', 'port')
+#EMAIL_USE_SSL = False
+#EMAIL_USE_TLS = config.get('smtp', 'tls')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
+STATIC_ROOT = posixpath.join(*([os.path.sep] + BASE_DIR.split(os.path.sep) + ['static']))
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'files'),

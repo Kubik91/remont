@@ -1,6 +1,6 @@
 {% load static sections sekizai_tags %}
 
-{% if table %}
+{% if tables %}
     {% addtoblock "css" %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/table.css' %}" />
     {% endaddtoblock %}
@@ -36,7 +36,7 @@
                             {% if table.title %}
                                 <caption class="caption">{{ table.title }}</caption>
                             {% endif %}
-                            <tbody>
+                            <thead>
                                 {% if table.table_items.all|min:'row' == 1 %}
                                     <tr>
                                         {% for col in table.table_items.all|max:'col'|getRange %}
@@ -44,6 +44,8 @@
                                         {% endfor %}
                                     </tr>
                                 {% endif %}
+                            </thead>
+                            <tbody>
                                 {% for row in table.table_items.all|max:'row'|getRange:'2' %}
                                     <tr>
                                         {% if table.table_items.all|allRow:row|allCol:1|getValue %}
