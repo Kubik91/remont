@@ -19,10 +19,12 @@ from django.db.utils import IntegrityError
 from ckeditor.fields import RichTextField
 from versatileimagefield.fields import VersatileImageField
 
+
 def files():
     path = join(settings.BASE_DIR, 'app/templates/app/temp/')
     allfiles = [f for f in listdir(path) if isfile(join(path, f))]
     return tuple(zip(allfiles, allfiles))
+
 
 ANIMATES = (
     ('Bounce', (
@@ -43,8 +45,7 @@ ANIMATES = (
             ('fadeInRightBig', 'fadeInRightBig'),
             ('fadeInUp', 'fadeInUp'),
             ('fadeInUpBig', 'fadeInUpBig'),
-        )
-    ),
+        )),
     ('Flip', (
             ('flipInX', 'flipInX'),
             ('flipInY', 'flipInY'),

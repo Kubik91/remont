@@ -59,8 +59,8 @@ ymaps.ready(function () {
             }),
             HintLayout = ymaps.templateLayoutFactory.createClass(
                 "<div class='my-hint'>" +
-                "<b>{{ properties.object }}</b><br />" +
-                "{{ properties.address }}" +
+                "{% if properties.object %}<b>{{ properties.object }}</b><br />{% endif %}" +
+                "{% if properties.address %}{{ properties.address }}{% endif %}" +
                 "</div>", {
                     getShape: function () {
                         var el = this.getElement(),
@@ -80,11 +80,11 @@ ymaps.ready(function () {
             ),
             BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
                 '<address>' +
-                '<strong>{{ properties.object }}</strong>' +
-                '<br />' +
-                '{{ properties.address }}' +
-                '<br />' +
-                '{{ properties.baloon|raw }}' +
+                '{% if properties.object %}<strong>{{ properties.object }}</strong>' +
+                '<br />{% endif %}' +
+                '{% if properties.address %}{{ properties.address }}' +
+                '<br />{% endif %}' +
+                '{{ properties.balloonContent|raw }}' +
                 '</address>', {}
             );
 
@@ -98,18 +98,17 @@ ymaps.ready(function () {
 
 
         Object.keys(maps).forEach(function (key) {
-            
             window[key + 'Map'] = new ymaps.Map(key, {
                 center: maps[key][1]['coords'],
                 zoom: 13,
                 controls: [autoRouteItem, masstransitRouteItem, pedestrianRouteItem, exchangeRoute, zoomControl, geolocationControl],
             }, {
-                searchControlResults: 1,
-                searchControlNoCentering: true,
-                buttonMaxWidth: 150
-            });
+                    searchControlResults: 1,
+                    searchControlNoCentering: true,
+                    buttonMaxWidth: 150
+                });
 
-            window[key+'Collection'] = new ymaps.GeoObjectCollection();
+            window[key + 'Collection'] = new ymaps.GeoObjectCollection();
 
             if (key.length) {
                 for (i = 1; i <= Object.keys(maps[key]).length; i++) {
@@ -120,7 +119,7 @@ ymaps.ready(function () {
                             object: maps[key][i]['object'],
                             // baloon: maps[key][i]['baloon']
                         }, {
-                            balloonContentLayout: BalloonContentLayout,
+                            // balloonContentLayout: BalloonContentLayout,
                             hintLayout: HintLayout,
                             hintPane: 'hint',
                             balloonPanelMaxMapArea: 'Infinity',
@@ -128,18 +127,24 @@ ymaps.ready(function () {
                         }
                     );
                     if (maps[key][i]['baloon'].length) {
+                        console.log('Yes');
                         myPlacemark.properties.set('balloonContent', maps[key][i]['baloon']);
+                        myPlacemark.options.set({
+                            balloonContentLayout: BalloonContentLayout,
+                            balloonPanelMaxMapArea: 'Infinity',
+                            balloonAutoPan: false
+                        });
                     }
-                    console.log(myPlacemark);
-                    window[key + 'Collection'].add(myPlacemark)
+                    //console.log(myPlacemark);
+                    window[key + 'Collection'].add(myPlacemark);
                 };
                 window[key + 'Map'].geoObjects.add(window[key + 'Collection']);
-                
+
                 window[key + 'Map'].setBounds(window[key + 'Map'].geoObjects.getBounds(), { checkZoomRange: true }).then(function () { if (window[key + 'Map'].getZoom() > 13) window[key + 'Map'].setZoom(16); });
             };
 
             window[key + 'Collection'].events.add('click', function (e) {
-                
+
                 window[key + 'Collection'].each(function (e) {
                     e.options.set('preset', 'islands#blueIcon');
                 });
@@ -213,7 +218,7 @@ ymaps.ready(function () {
                     sourcePoint = null;
                 }
             }
-            
+
             function createRoute(routingMode) {
                 if (!autoRouteItem._selected && !masstransitRouteItem._selected && !pedestrianRouteItem._selected) {
                     routingMode = currentRoutingMode;
@@ -238,7 +243,7 @@ ymaps.ready(function () {
                 } else {
                     return;
                 }
-                
+
                 if (!sourcePoint) {
                     currentRoutingMode = routingMode;
                     if (targetPoint) {
@@ -272,11 +277,11 @@ ymaps.ready(function () {
                         });
                     }
                 }
-                
+
                 clearRoute();
 
                 currentRoutingMode = routingMode;
-                
+
                 if (targetPoint) {
                     if (exchangeRoute._selected) {
                         targetPoint = [sourcePoint, sourcePoint = targetPoint][0]
@@ -302,6 +307,6 @@ ymaps.ready(function () {
             function showMessage() {
 
             }
-        })
+        });
     }
 });
