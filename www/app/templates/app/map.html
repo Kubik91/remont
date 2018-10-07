@@ -1,4 +1,4 @@
-{% load static sections sekizai_tags %}
+{% load static sections sekizai_tags l10n %}
 
 {% if map %}
     {% addtoblock "css" %}
@@ -22,11 +22,11 @@ maps.{{''|stat_uniq}}  =
 {
     {% for m in map %}
 {{forloop.counter}}:{
-    coords:[{{m.latitude}}, {{m.longitude}}],
-    hint:{{m.hint}},
-    baloon:'{{m.baloon|safe}}',
-    address:'{{m.address|safe}}',
-    object:'{{m.object}}'
+    coords:[parseFloat({{m.latitude|unlocalize}}), parseFloat({{m.longitude|unlocalize}})],
+    hint:{{m.hint|default_if_none:'""'}},
+    baloon:'{{m.baloon|default_if_none:''|safe}}',
+    address:'{{m.address|default_if_none:''|safe}}',
+    object:'{{m.object|default_if_none:''}}'
     },
 {% endfor %}}
 </script>

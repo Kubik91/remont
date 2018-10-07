@@ -118,7 +118,7 @@ ymaps.ready(function () {
                             preset: 'islands#icon',
                             address: maps[key][i]['address'],
                             object: maps[key][i]['object'],
-                            baloon: maps[key][i]['baloon']
+                            // baloon: maps[key][i]['baloon']
                         }, {
                             balloonContentLayout: BalloonContentLayout,
                             hintLayout: HintLayout,
@@ -127,6 +127,10 @@ ymaps.ready(function () {
                             balloonAutoPan: false
                         }
                     );
+                    if (maps[key][i]['baloon'].length) {
+                        myPlacemark.properties.set('balloonContent', maps[key][i]['baloon']);
+                    }
+                    console.log(myPlacemark);
                     window[key + 'Collection'].add(myPlacemark)
                 };
                 window[key + 'Map'].geoObjects.add(window[key + 'Collection']);

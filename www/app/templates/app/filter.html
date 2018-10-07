@@ -1,6 +1,6 @@
 {% load static sections sekizai_tags %}
 
-{% if fil %}
+{% if filter %}
     {% addtoblock "css" %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/filter.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/direction-reveal.css' %}" />
@@ -56,7 +56,7 @@
                         {% endaddtoblock %}
                     {% endif %}
                 ">
-                    <div class="filter-item direction-reveal__card" style="background: #FFF; background-image: url('{{ fil.image.thumbnail.500x500 }}');">
+                    <div class="filter-item direction-reveal__card" style="background: #FFF; background-image: url('{{ fil.image.thumbnail.500x500 }}'); background-position-x: center; background-position-y: center;">
                         <div class="veil direction-reveal__overlay direction-reveal__anim--in">
                             <p>{{ fil.text }}</p>
                             {% if fil.button_text and fil.button_url %}

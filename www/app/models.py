@@ -137,14 +137,9 @@ class Page(models.Model):
             self.slug = slugify(self.title)
         last = Page.objects.exclude(id=self.id).aggregate(max_posmenu=Max('posmenu')).get('max_posmenu')
         if last:
-            if self.posmenu and self.posmenu > last + 1:
-                self.posmenu = last + 1
-            
-            if self.posmenu and self.pk is None:
-                if self.posmenu > last:
-                    self.posmenu = last + 1
-                else:
-                    Page.objects.filter(posmenu__gte=self.posmenu).update(posmenu=F('posmenu') + 1)
+            if self.pos and self.pos > last or self.pk is None:
+                self.pos = last + 1
+                Page.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
             else:
                 orig = Page.objects.get(pk=self.pk)
                 if orig.posmenu != self.posmenu:
@@ -191,7 +186,7 @@ class Section(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.title if self.title else self.pk)
         rel = ['block', 'table', 'image', 'filter', 'carusel', 'map']
         rel.remove(self.section_type);
         if self.section_type == 'block' or (self.section_type == 'table' and self.table.all().count() < 2):
@@ -207,13 +202,9 @@ class Section(models.Model):
                         objects = getattr(self, link.name).all().delete()
         last = Section.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
-            if self.pos and self.pos > last:
+            if self.pos and self.pos > last or self.pk is None:
                 self.pos = last + 1
-            if self.pos and self.pk is None:
-                if self.pos > last:
-                    self.pos = last + 1
-                else:
-                    Section.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
+                Section.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
             else:
                 orig = Section.objects.get(pk=self.pk)
                 if orig.pos != self.pos:
@@ -229,7 +220,7 @@ class Section(models.Model):
         if self.title:
             return f'Секция {self.title} на странице {self.page}'
         else:
-            return f'Секция {self.pos} на странице {self.page}'
+            return f'Секция {self.pk} на странице {self.page}'
 
     class Meta:
         managed = True
@@ -274,13 +265,9 @@ class FilterItem(models.Model):
             self.height = 1
         last = FilterItem.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
-            if self.pos and self.pos > last:
+            if self.pos and self.pos > last or self.pk is None:
                 self.pos = last + 1
-            if self.pos and self.pk is None:
-                if self.pos > last:
-                    self.pos = last + 1
-                else:
-                    FilterItem.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
+                FilterItem.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
             else:
                 orig = FilterItem.objects.get(pk=self.pk)
                 if orig.pos != self.pos:
@@ -357,13 +344,9 @@ class Table(models.Model):
     def save(self, *args, **kwargs):
         last = Table.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
-            if self.pos and self.pos > last:
+            if self.pos and self.pos > last or self.pk is None:
                 self.pos = last + 1
-            if self.pos and self.pk is None:
-                if self.pos > last:
-                    self.pos = last + 1
-                else:
-                    Table.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
+                Table.objects.filter(pos__gte=self.pos).update(pos=F('pos') + 1)
             else:
                 orig = Table.objects.get(pk=self.pk)
                 if orig.pos != self.pos:

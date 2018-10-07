@@ -17,7 +17,10 @@ th[scope="row"] {
     background-color: #0087ff;
 }
 .caption{
+    display: table-caption;
+    caption-side: top;
     font-weight: bold;
+    text-align: center;
 }
 .reverse {
     flex-direction: row-reverse;
