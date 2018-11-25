@@ -709,7 +709,7 @@ section.callaction {
 }
 
 #main-top{
-	height: 56vw;
+	height: 50vw;
 	background: url("/static/imgs/fon.png");
 	display: flex;
 	flex-direction: column;
@@ -752,6 +752,10 @@ section.callaction {
 	margin-bottom: -58px;
 }
 .main-text{
+	color: white;
+	line-height: 1;
+}
+.main-info-text a{
 	color: white;
 }
 
