@@ -19,17 +19,18 @@ def render_form(context):
 
 @register.simple_tag
 def footer_addr():
-    return Footer.objects.last().address
+    return Footer.objects.last().address if Footer.objects.last() else ''
 
 
 @register.simple_tag
 def footer_middle():
-    return Footer.objects.last().middle
+    return Footer.objects.last().middle if Footer.objects.last() else ''
 
 
 @register.simple_tag
 def footer_links():
     links = []
-    for page in Footer.objects.last().pages.all():
-        links.append(f'<li><a href="{page.get_absolute_url}">{page.title}</a></li>')
+    if Footer.objects.last() and Footer.objects.last().pages.all():
+        for page in Footer.objects.last().pages.all():
+            links.append(f'<li><a href="{page.get_absolute_url}">{page.title}</a></li>')
     return mark_safe(''.join(links))
