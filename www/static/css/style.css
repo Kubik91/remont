@@ -28,7 +28,7 @@ html {
     overflow-x:hidden;
 }
 body {
-	font-family:'Open Sans', Arial, sans-serif;
+	font-family: Verdana,Geneva,sans-serif;
 	font-size:14px;
 	font-weight:300;
 	line-height:1.6em;
@@ -707,6 +707,54 @@ section.callaction {
 	opacity: 0.9;
 	z-index: -1;
 }
+
+#main-top{
+	height: 56vw;
+	background: url("/static/imgs/fon.png");
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	background-size: cover;
+}
+
+#main-logo{
+	background: url("/static/imgs/strochka_s_logo.png") no-repeat center;
+	background-size: contain;
+	padding-bottom: 12vw;
+}
+#main-info{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	margin-bottom: 58px;
+}
+.main-sub{
+	height: auto;
+}
+.main-info-sub{
+	flex: 1;
+	text-align: center;
+}
+#main-info-zvonok{
+	background: url("/static/imgs/zvonok.png") no-repeat top;
+	background-size: contain;
+	height: 100%;
+}
+#main-info-usluga{
+	background: url("/static/imgs/nastroyka.png") no-repeat top;
+	background-size: contain;
+	height: 100%;
+}
+.main-info-sub>.btn{
+	margin-top: 20px;
+}
+.main-info-text{
+	margin-bottom: -58px;
+}
+.main-text{
+	color: white;
+}
+
 
 /* ===================================
 9. Section: Bottom
@@ -1837,6 +1885,10 @@ ul.time-post li.time{
 
 footer{
 	background:#f2f2f2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
 }
 #sub-footer{
 	border-top: 1px solid #ddd;
@@ -1845,7 +1897,7 @@ footer{
 
 
 footer{
-	padding:50px 0 0 0;
+	padding:20px 0 0 0;
 }
 
 footer a {

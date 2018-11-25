@@ -29,7 +29,7 @@ def pages(request, slug = False):
                 request,
                 'app/view.html',
                 {
-                    'page':page,
+                    'page': page,
                 }
             )
         else:
@@ -37,7 +37,7 @@ def pages(request, slug = False):
                 request,
                 page.view,
                 {
-                    'page':page,
+                    'page': page,
                 }
             )
     return render(

@@ -2,6 +2,16 @@
 {% load sections sekizai_tags %}
 {% block content %}
     {{ ''|reset_uniq }}
+    {% if page.homePage %}
+        <div id="main-top" class="section">
+            <div id="main-logo" class="main-sub"></div>
+            <div id="main-info" class="main-sub">
+                <div class="main-info-sub"><div id="main-info-zvonok"></div><button class="btn btn-success block_button" type="button" data-toggle="modal">Заказать звонок</button></div>
+                <div class="main-info-sub main-info-text"><p class="main-text"><font size="7">Бесплатная консультация по телефону</font></p><font size="7"><a href="tel:+375256301061">+375 25 630 10 61</a></font></div>
+                <div class="main-info-sub"><div id="main-info-usluga"></div><button class="btn btn-primary block_button" type="button" data-toggle="modal">Выбрать услугу</button></div>
+            </div>
+        </div>
+    {% endif %}
     {% block section %}
         {% for section in page.sections.all %}
             {% if section.section_type == 'block' %}

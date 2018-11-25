@@ -11,11 +11,9 @@ from os.path import isfile, join
 from django.conf import settings
 from django.db import models
 from django.db.models import Max, Min, F
-from django.db.models.signals import m2m_changed
 from django.template.defaultfilters import slugify
-from django.dispatch import receiver
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
+from django.urls import reverse
 from ckeditor.fields import RichTextField
 from versatileimagefield.fields import VersatileImageField
 
@@ -85,13 +83,15 @@ ANIMATES = (
     )
 )
 
+
 class Block(models.Model):
     section = models.OneToOneField('Section', models.CASCADE, related_name="block", verbose_name="Секция")
     text = RichTextField(max_length=1000, blank=True, null=True, verbose_name="Текст")
     background = VersatileImageField(upload_to='block/', max_length=255, blank=True, null=True, verbose_name="Фон")
     button_url = models.CharField(max_length=255, blank=True, null=True, verbose_name="Ссылка")
     button_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Текст кнопки")
-    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True, verbose_name="Анимация")
+    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True,
+                               verbose_name="Анимация")
 
     def __str__(self):
         return f'Блок секции {self.section}'
@@ -101,7 +101,6 @@ class Block(models.Model):
         db_table = 'block'
         verbose_name = 'Блок'
         verbose_name_plural = "Блоки"
-
 
 
 class HomePage(models.Model):
@@ -115,8 +114,6 @@ class HomePage(models.Model):
         db_table = 'home_page'
         verbose_name = "Домашняя страница"
         verbose_name_plural = "Домашние страницы"
-
-
 
 
 class Page(models.Model):
@@ -145,12 +142,18 @@ class Page(models.Model):
                 orig = Page.objects.get(pk=self.pk)
                 if orig.posmenu != self.posmenu:
                     if orig.posmenu < self.posmenu:
-                        Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(posmenu=F('posmenu') - 1)
+                        Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(
+                            posmenu=F('posmenu') - 1)
                     if orig.posmenu > self.posmenu:
-                        Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(posmenu=F('posmenu') + 1)
+                        Page.objects.filter(posmenu__gte=self.posmenu).filter(posmenu__lte=orig.posmenu).update(
+                            posmenu=F('posmenu') + 1)
         else:
             self.posmenu = 1
         super(Page, self).save(*args, **kwargs)
+
+    @property
+    def get_absolute_url(self):
+        return reverse('pages', self.slug) if self.slug else reverse('home')
 
     class Meta:
         managed = True
@@ -193,14 +196,13 @@ class Section(models.Model):
         if self.section_type == 'block' or (self.section_type == 'table' and self.table.all().count() < 2):
             rel.remove('image')
         links = [f for f in Section._meta.get_fields()
-                #if (f.one_to_many or f.one_to_one)
-                if f.auto_created and not f.concrete
-        ]
+                 if f.auto_created and not f.concrete
+                 ]
         if self.pk is not None:
             for link in links:
                 if link.name in rel:
                     if hasattr(self, link.name):
-                        objects = getattr(self, link.name).all().delete()
+                        getattr(self, link.name).all().delete()
         last = Section.objects.exclude(id=self.id).aggregate(max_pos=Max('pos')).get('max_pos')
         if last:
             if self.pos and self.pos > last or self.pk is None:
@@ -252,9 +254,11 @@ class FilterItem(models.Model):
     pos = models.IntegerField(blank=True, null=True, verbose_name="Позиция")
     width = models.IntegerField(blank=True, null=True, verbose_name="Ширина")
     height = models.IntegerField(blank=True, null=True, verbose_name="Высота")
-    categories = models.ManyToManyField("FilterCategory", blank=True, related_name="filter_category", verbose_name="Категории")
+    categories = models.ManyToManyField("FilterCategory", blank=True, related_name="filter_category",
+                                        verbose_name="Категории")
     section = models.ForeignKey(Section, models.CASCADE, related_name="filter", verbose_name="Секция")
-    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True, verbose_name="Анимация")
+    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True,
+                               verbose_name="Анимация")
     
     def __str__(self):
         return f'Фильтр {self.section}'
@@ -287,7 +291,6 @@ class FilterItem(models.Model):
         verbose_name = "Элемент фильтра"
         verbose_name_plural = "Элементы фильтра"
 
-        
 
 class CaruselItem(models.Model):
     section = models.ForeignKey(Section, models.CASCADE, related_name="carusel", verbose_name="Секция")
@@ -295,7 +298,8 @@ class CaruselItem(models.Model):
     text = RichTextField(max_length=1000, blank=True, null=True, verbose_name="Текст")
     button_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Текст кнопки")
     button_url = models.CharField(max_length=255, blank=True, null=True, verbose_name="Url кнопки")
-    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True, verbose_name="Анимация")
+    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True,
+                               verbose_name="Анимация")
     
     def __str__(self):
         return f'Элемент карусели {self.section}'
@@ -312,7 +316,7 @@ class MapItem(models.Model):
     longitude = models.FloatField(verbose_name="Долгота")
     hint = models.CharField(max_length=255, blank=True, null=True, verbose_name="Хинт")
     baloon = models.CharField(max_length=255, blank=True, null=True, verbose_name="Балун")
-    address = models.CharField(max_length=255, blank=True, null=True, verbose_name="Адрес")
+    address = models.ForeignKey('Address', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Адрес")
     object = models.CharField(max_length=255, blank=True, null=True, verbose_name="Объект")
     section = models.ManyToManyField('Section', related_name="map", verbose_name="Секция")
 
@@ -325,11 +329,13 @@ class MapItem(models.Model):
         verbose_name = "Элемент карты"
         verbose_name_plural = "Элементы карты"
 
+
 class Table(models.Model):
     title = models.CharField(max_length=255, blank=True, null=True, verbose_name="Название")
     section = models.ForeignKey(Section, models.CASCADE, related_name="table", verbose_name="секция")
     pos = models.IntegerField(blank=True, null=True, verbose_name="Позиция")
-    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True, verbose_name="Анимация")
+    animate = models.CharField(max_length=255, choices=ANIMATES, default='None', blank=True, null=True,
+                               verbose_name="Анимация")
 
     def __str__(self):
         if self.title:
@@ -367,7 +373,6 @@ class Table(models.Model):
         verbose_name_plural = "Таблицы"
 
 
-
 class TableItem(models.Model):
     row = models.IntegerField(verbose_name="Строка")
     col = models.IntegerField(verbose_name="Столбец")
@@ -383,6 +388,7 @@ class TableItem(models.Model):
         unique_together = (("row", "col", 'table'),)
         verbose_name = "Элемент таблицы"
         verbose_name_plural = "Элементы таблицы"
+
 
 class Feedback(models.Model):
     name = models.CharField(max_length=255, verbose_name="Имя")
@@ -400,3 +406,34 @@ class Feedback(models.Model):
         db_table = 'feedback'
         verbose_name = "Заявка"
         verbose_name_plural = "Заявки"
+
+
+class Footer(models.Model):
+    pages = models.ManyToManyField('Page', blank=True, null=True, verbose_name='Страницы')
+    middle = models.TextField(max_length=1000, blank=True, null=True, verbose_name="Текст")
+    address = models.ForeignKey('Address', on_delete=models.CASCADE, blank=True, null=True, verbose_name="адрес")
+
+    class Meta:
+        verbose_name = "Футер"
+        verbose_name_plural = "Футер"
+
+    def __str__(self):
+        return self._meta.verbose_name
+
+
+class Address(models.Model):
+    city = models.CharField(max_length=255, verbose_name="Город")
+    street = models.CharField(max_length=255, verbose_name="Улица")
+    home = models.CharField(max_length=255, verbose_name="Дом")
+    corpus = models.CharField(max_length=255, verbose_name="Корпус", blank=True, null=True)
+    office = models.CharField(max_length=255, verbose_name="Офис", blank=True, null=True)
+
+    def __str__(self):
+        return f'г. {self.city}, ул.{self.street}' +\
+               (f' {self.corpus}' if self.corpus else '') +\
+               f' д.{self.home}' +\
+               (f' {self.office}' if self.office else '')
+
+    class Meta:
+        verbose_name = "Адрес"
+        verbose_name_plural = "Адреса"

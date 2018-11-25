@@ -20,6 +20,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     )
     list_filter = (('created_at', DateRangeFilter), ('updated_at', DateRangeFilter), 'name')
 
+
 class BlockAdmin(admin.ModelAdmin):
     list_display = (
         'id',
@@ -31,6 +32,7 @@ class BlockAdmin(admin.ModelAdmin):
         'animate',
     )
     list_filter = ('section',)
+
     class Media:
         css = {
             'all': (static('css/animate.min.css'),)
@@ -52,6 +54,7 @@ class CaruselItemAdmin(admin.ModelAdmin):
     )
     raw_id_fields = ('section',)
     search_fields = ('slug',)
+
     class Media:
         css = {
             'all': (static('css/animate.min.css'),)
@@ -84,6 +87,7 @@ class FilterItemAdmin(admin.ModelAdmin):
 class HomePageAdmin(admin.ModelAdmin):
     list_display = ('id', 'page')
     list_filter = ('page',)
+
     def has_add_permission(self, request):
         base_add_permission = super(HomePageAdmin, self).has_add_permission(request)
         if base_add_permission:
@@ -100,53 +104,76 @@ class MapItemAdmin(admin.ModelAdmin):
     raw_id_fields = ('section',)
 
 
-
-
 class SectionImageAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'section', 'image', 'position', 'animate')
     list_filter = ('section',)
+
+
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ('city', 'street', 'corpus', 'home', 'office')
+
 
 class MaplItemInline(CompactInline):
     model = models.MapItem.section.through
     verbose_name = "Карта"
     verbose_name_plural = "Карты"
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
+
 
 class CaruselItemInline(CompactInline):
     model = models.CaruselItem
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
+
 
 class FilterItemInline(CompactInline):
     model = models.FilterItem
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
+
 
 class BlockInline(CompactInline):
     model = models.Block
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
+
 
 class TableInline(CompactInline):
     model = models.Table
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
 
+
+class AddressInline(CompactInline):
+    model = models.Address
+    show_change_link = True
+
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
+
 class SectionImageInline(CompactInline):
     model = models.SectionImage
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
@@ -184,12 +211,24 @@ class SectionAdmin(admin.ModelAdmin):
             static('admin/js/bicycle.js'),
             )
 
+
 class SectionInline(CompactInline):
     model = models.Section
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
+
+
+class PageInline(CompactInline):
+    model = models.Page
+    show_change_link = True
+
+    def get_extra(self, request, obj=None, **kwargs):
+        extra = 0
+        return extra
+
 
 class PageAdmin(admin.ModelAdmin):
     inlines = [
@@ -210,6 +249,7 @@ class PageAdmin(admin.ModelAdmin):
     list_filter = (('created_at', DateRangeFilter), ('updated_at', DateRangeFilter))
     search_fields = ('slug',)
     date_hierarchy = 'created_at'
+
     class Media:
         css = {
             'all': (static('css/animate.min.css'),)
@@ -218,13 +258,16 @@ class PageAdmin(admin.ModelAdmin):
             static('admin/js/animate.js'),
             static('admin/js/bicycle.js'),
             )
-    
+
+
 class TableItemInline(CompactInline):
     model = models.TableItem
     show_change_link = True
+
     def get_extra(self, request, obj=None, **kwargs):
         extra = 0
         return extra
+
 
 class TableAdmin(admin.ModelAdmin):
     inlines = [
@@ -250,10 +293,24 @@ class TableAdmin(admin.ModelAdmin):
             static('admin/js/bicycle.js'),
             )
 
+
 class TableItemAdmin(admin.ModelAdmin):
 
     list_display = ('id', 'row', 'col', 'value')
     raw_id_fields = ('table',)
+
+
+class FooterAdmin(admin.ModelAdmin):
+    list_display = ('middle', 'address')
+
+    def has_add_permission(self, request):
+        base_add_permission = super(FooterAdmin, self).has_add_permission(request)
+        if base_add_permission:
+            # if there's already an entry, do not allow adding
+            count = models.Footer.objects.all().count()
+            if count == 0:
+                return True
+        return False
 
 
 def _register(model, admin_class):
@@ -272,3 +329,5 @@ _register(models.Section, SectionAdmin)
 _register(models.Table, TableAdmin)
 _register(models.TableItem, TableItemAdmin)
 _register(models.Feedback, FeedbackAdmin)
+_register(models.Footer, FooterAdmin)
+_register(models.Address, AddressAdmin)
