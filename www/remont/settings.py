@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'd5ef438f-0227-4be7-a4fc-4c9626a446bc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -128,14 +128,14 @@ USE_L10N = True
 USE_TZ = True
 
 config = RawConfigParser()
-config.read('./smtp.ini')
+config.read('../smtp.ini')
 
-#EMAIL_HOST = config.get('smtp', 'server')
-#EMAIL_HOST_USER = config.get('smtp', 'user')
-#EMAIL_HOST_PASSWORD = config.get('smtp', 'password')
-#EMAIL_PORT = config.get('smtp', 'port')
-#EMAIL_USE_SSL = False
-#EMAIL_USE_TLS = config.get('smtp', 'tls')
+# EMAIL_HOST = config.get('smtp', 'server')
+# EMAIL_HOST_USER = config.get('smtp', 'user')
+# EMAIL_HOST_PASSWORD = config.get('smtp', 'password')
+# EMAIL_PORT = config.get('smtp', 'port')
+# EMAIL_USE_SSL = False
+# EMAIL_USE_TLS = config.get('smtp', 'tls')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -144,12 +144,12 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'files'),
 )
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
 
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
